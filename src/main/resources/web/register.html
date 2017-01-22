@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>r.e.n.d.e.z.v.o.u.s</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+	console.log('Welcome to registration portal');
+    $("#registerBtn").click(function(){
+    	var paramObj = {};
+    	$.each($("#register").serializeArray(), function(_, kv) {
+  		  if (paramObj.hasOwnProperty(kv.name)) {
+  		    paramObj[kv.name] = $.makeArray(paramObj[kv.name]);
+  		    paramObj[kv.name].push(kv.value);
+  		  }
+  		  else {
+  		    paramObj[kv.name] = kv.value;
+  		  }
+  		});
+    	console.log(JSON.stringify(paramObj));
+    	
+    	$.ajax({
+            url: '/api/register',
+            type: 'post',
+            dataType: 'application/json',
+            success: function (data) {
+                $('#target').html(data);
+            },
+            data: JSON.stringify(paramObj)
+        });
+    });
+});
+</script>
+</head>
+<body>
+	<h1>r.e.n.d.e.z.v.o.u.s</h1>
+	<hr />
+	<h2>Register Yourself!</h2>
+	<form id="register">
+	<table>
+		<tr>
+			<td>First Name</td>
+			<td><input name="firstName"></td>
+		</tr>
+		<tr>
+			<td>Last Name</td>
+			<td><input name="lastName"></td>
+		</tr>
+		<tr>
+			<td>User Name</td>
+			<td><input name="userName"></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input type='password' name="password"></td>
+		</tr>
+		<tr>
+			<td>Confirm Password</td>
+			<td><input></td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td><input name="email"></td>
+		</tr>
+		<tr>
+			<td>Phone Number</td>
+			<td><input name="phoneNumber"></td>
+		</tr>
+		<tr>
+			<td>Areas of Interest</td>
+			<td><select name="areaOfInterest"><option>Technology</option>
+					<option>Movies</option>
+					<option>Sports</option></select></td>
+		</tr>
+		<tr>
+			<td><a href='#' id="registerBtn">Register</a> | <a href='#'>Cancel</a></td>
+		</tr>
+	</table>
+	</form>
+</body>
+</html>

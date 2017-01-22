@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>r.e.n.d.e.z.v.o.u.s</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+
+$(document).ready(function(){
+	console.log('In home page');
+	
+	$("#newBlog").hide();
+	
+	$.getJSON( "/api/favorites", function( data ) {
+		$("#favDiv").html(JSON.stringify(data, null, 2));
+	});
+	
+	$.getJSON( "/api/user/info", function( data ) {
+		console.log('Retrieved user details');
+		$("#userId").text(data.firstName+" "+data.lastName);
+	});
+	
+	$("#newPost").click(function(){
+		$("#newBlog").show();
+		$("#blogList").hide();
+	});
+	
+	$("#cancelNewPost").click(function(){
+		$("#newBlog").hide();
+		$("#blogList").show();
+	});
+	
+	$("#userId").click(function(){
+		console.log('Fetching user details');
+		$.getJSON( "/api/user/info", function( data ) {
+			console.log('Retrieved user details');
+    		$("#jsonResp").html(JSON.stringify(data, null, 2));
+    	});
+	});
+	
+    $("#favorites").click(function(){
+    	console.log('Fetching favourite blogs');
+    	$.getJSON( "/api/favorites", function( data ) {
+    		console.log('Retrieved favourite blogs');
+    		$("#favDiv").html(JSON.stringify(data, null, 2));
+    	});
+    });
+    
+    $("#searchBlog").click(function(){
+    	var title = $("#blogTitle").val();
+    	console.log('Fetching blogs by title '+title);
+    	var data = {title: title};
+    	$.getJSON( "/api/blog/search", data,function( data ) {
+    		console.log('Retrieved blogs by title');
+    		$("#jsonResp").html(JSON.stringify(data, null, 2));
+    	});
+    });
+    
+    $("#savePost").click(function(){
+    	var paramObj = {};
+    	$.each($("#blogForm").serializeArray(), function(_, kv) {
+  		  if (paramObj.hasOwnProperty(kv.name)) {
+  		    paramObj[kv.name] = $.makeArray(paramObj[kv.name]);
+  		    paramObj[kv.name].push(kv.value);
+  		  }
+  		  else {
+  		    paramObj[kv.name] = kv.value;
+  		  }
+  		});
+    	console.log(JSON.stringify(paramObj));
+    	
+    	$.ajax({
+            url: '/api/blog/create',
+            type: 'post',
+            dataType: 'application/json',
+            success: function (data) {
+                $('#jsonResp').html(JSON.stringify(data, null, 2));
+            },
+            data: JSON.stringify(paramObj)
+        });
+    });
+    
+});
+</script>
+</head>
+<body>
+	<h1>r.e.n.d.e.z.v.o.u.s</h1>
+	<hr />
+	<a href='#' id="newPost">New Post</a> |
+	<input type="text" id="blogTitle">
+	<a href='#' id="searchBlog">Search Blog</a> | Invite
+	<input placeholder="email1, email2, email3"> |
+	<a href='#' id="userId"></a> |
+	<a href='/logout'>Logout</a>
+	<hr />
+	<table>
+		<tr>
+			<td width="20%" valign="top">
+				<div>
+				<h2>Favorite Posts</h2>
+				<ul>
+					<li><a href='home.html'>asdkjf saddflkj</a></li>
+					<li><a href='home.html'>oioi oioi</a></li>
+					<li><a href='home.html'>mkkjvnch sdf</a></li>
+					<li><a href='home.html'>zxc zxv zcxcv</a></li>
+				</ul>
+				</div>
+				<div>
+				<h2 id="favorites">Favorite Posts</h2>
+					<pre id="favDiv"></pre>
+				</div>
+			</td>
+			<td valign="top" width='50%'>
+				<div id="blogList">
+				<h2>OpenSource Event Announced</h2> Posted on 1 JAN 2017
+
+				<p>asdfjaf adflkajflaskdjf afflaskfjaf aslfkajsflkasjfas
+					dflaskfjasd flaskfjalsfkjalsfdkjsa dfasdlfkjasdflasf
+					asdlkfjsdalfjksdaflkajsdf asdflaksdjflasdkfjas dfllaskdfjlaskdfjas
+					dflasdkfjasldkfja</p>
+
+				<p>asdfjaf adflkajflaskdjf afflaskfjaf aslfkajsflkasjfas
+					dflaskfjasd flaskfjalsfkjalsfdkjsa dfasdlfkjasdflasf
+					asdlkfjsdalfjksdaflkajsdf asdflaksdjflasdkfjas dfllaskdfjlaskdfjas
+					dflasdkfjasldkfjas dflaskdfjlaskdfjlasdkfj asdflaskdfjasfd
+					asldkfjasdlfkjasdf salldfkjjsdlfkjsdf salfksajflksjdf
+					dflaskfjalskfjas fds dflaskdfjlaskdfjlasdkfj asdflaskdfjasfd
+					asldkfjasdlfkjasdf salldfkjjsdlfkjsdf salfksajflksjdf
+					dflaskfjalskfjas fd</p>
+
+				<p>jalskfjas fdasdfjaf adflkajflask salldfkjjsdlfkjsdf
+					salfksajflksjdf dflaskf</p>
+
+				<p>asdfjaf adflkajflaskdjf afflaskfjaf aslfkajsflkasjfas
+					dflaskfjasd flaskfjalsfkjalsfdkjsa dfasdlfkjasdflasf
+					asdlkfjsdalfjksdaflkj asdflaskdfjasfd asldkfjasdlfkjasdf
+					salldfkjjsdlfkjsdf salfksajflksjdf dflaskfjalskfjas fd</p> Leave a
+				comment: <textarea></textarea>
+				<h3>Comments</h3> <b>glarimy</b> | 3 JAN 2017
+				<p>alsdkfj asdfllkkasjflasdkf sdfkaskjflkasdjf
+					asdflaskfjladskfjsda f</p> <b>glarimy</b> | 3 JAN 2017
+				<p>alsdkfj asdfllkkasjflasdkf sdfkaskjflkasdjf
+					asdflaskfjladskfjsda f</p>
+				</div>
+				<div id="newBlog">
+				<h2>New Post</h2>
+				<form id="blogForm">
+				<p>Title <input placeholder='title' name="title"></p><p>Tags <input placeholder='tags'></p>
+				Post<br/><textarea rows="20" cols="80" name="content"></textarea><br/><a href='#' id="savePost">Save</a> | <a href='#' id="cancelNewPost">Cancel</a>
+				</form>
+				</div>	
+			</td>
+			<td width="30%" valign="top">
+				<div>
+				<h2>Json Response</h2>
+					<pre id="jsonResp"></pre>
+				</div>
+				<div>
+				<h2>Messages</h2>
+				<p>
+					<u>krishna | 31 DEC 2016 3.45PM</u><br />asdf adlfkajsf
+					asfllsdakfjsdad faslfdjasdfasf sdfllsdakfjs df
+				</p>
+				<p>
+					<u>krishna | 31 DEC 2016 3.45PM</u><br />asdf adlfkajsf
+					asfllsdakfjsdad faslfdjasdfasf sdfllsdakfjs df
+				</p>
+				<p>
+					<u>mohan | 30 DEC 2016 3.45PM</u><br />asdf adlfkajsf
+					asfllsdakfjsdad faslfdjasdfasf sdfllsdakfjs df
+				</p>
+				<hr /> <textarea></textarea><br />
+				<button>Post Message</button>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
